@@ -1,0 +1,10 @@
+folder_id: "1b2vB0wW4aMNdSsj3yIMKlT_e2hvghFNU"
+
+recipients:
+  - "echykolaeva@waverleysoftware.com"
+
+summary_model: "claude-sonnet-4-6"
+summary_content_limit: 8000
+
+# Cloud Scheduler cron: first Monday of every month at 09:00 UTC
+# Schedule: 0 9 1-7 * 1  (day 1-7 of month + Monday = first Monday)
