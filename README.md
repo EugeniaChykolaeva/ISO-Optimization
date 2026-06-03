@@ -34,7 +34,10 @@ gsutil mb -p iso-optimization gs://iso-optimization-state
 Grant the service account access:
 gsutil iam ch serviceAccount:ios-optimization@iso-optimization.iam.gserviceaccount.com:roles/storage.objectAdmin \
   gs://iso-optimization-state
-Step 4 — Store secrets in Secret Manager
+
+---
+
+## Step 4 — Store secrets in Secret Manager
 # Service account key
 gcloud secrets create service-account-json \
   --data-file=service_account.json \
@@ -61,12 +64,16 @@ for SECRET in service-account-json anthropic-api-key gmail-user gmail-app-passwo
     --project=iso-optimization
 done
 
-Step 5 — Build and push the container
+---
+
+## Step 5 — Build and push the container
 gcloud builds submit \
   --tag gcr.io/iso-optimization/drive-notifier \
   --project=iso-optimization
 
-Step 6 — Deploy as a Cloud Run Job
+---
+
+## Step 6 — Deploy as a Cloud Run Job
 gcloud run jobs create drive-notifier \
   --image gcr.io/iso-optimization/drive-notifier \
   --region europe-west1 \
@@ -78,7 +85,9 @@ gcloud run jobs create drive-notifier \
   --set-secrets GMAIL_APP_PASSWORD=gmail-app-password:latest \
   --project=iso-optimization
 
-Step 7 — Schedule with Cloud Scheduler
+---
+
+## Step 7 — Schedule with Cloud Scheduler
 Run once a month on the first Monday of the month at 09:00 UTC:
 
 gcloud scheduler jobs create http drive-notifier-schedule \
@@ -89,7 +98,9 @@ gcloud scheduler jobs create http drive-notifier-schedule \
   --location=europe-west1 \
   --project=iso-optimization
 
-Adding more recipients
+---
+
+## Adding more recipients
 Edit config.yaml:
 
 recipients:
@@ -97,7 +108,9 @@ recipients:
   - "another.person@example.com"
 Then rebuild and redeploy the container (Steps 5–6).
 
-Local testing
+---
+
+## Local testing
 pip install -r requirements.txt
 cp /path/to/service_account.json .
 export ANTHROPIC_API_KEY=sk-ant-...
