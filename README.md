@@ -29,15 +29,17 @@ In the [Google Cloud Console](https://console.cloud.google.com) for project `iso
 
 ## Step 3 — Create a Cloud Storage bucket for state
 
-```bash
-gsutil mb -p iso-optimization gs://iso-optimization-state
+`gsutil mb -p iso-optimization gs://iso-optimization-state`
+
 Grant the service account access:
-gsutil iam ch serviceAccount:ios-optimization@iso-optimization.iam.gserviceaccount.com:roles/storage.objectAdmin \
-  gs://iso-optimization-state
+
+`gsutil iam ch serviceAccount:ios-optimization@iso-optimization.iam.gserviceaccount.com:roles/storage.objectAdmin \
+  gs://iso-optimization-state`
 
 ---
 
 ## Step 4 — Store secrets in Secret Manager
+
 # Service account key
 gcloud secrets create service-account-json \
   --data-file=service_account.json \
@@ -53,6 +55,7 @@ echo -n "your-email@gmail.com" | \
 
 echo -n "YOUR_GMAIL_APP_PASSWORD" | \
   gcloud secrets create gmail-app-password --data-file=- --project=iso-optimization
+
 Gmail App Password: Go to https://myaccount.google.com/apppasswords and generate a password for "Mail".
 
 Grant the service account access to the secrets:
@@ -67,6 +70,7 @@ done
 ---
 
 ## Step 5 — Build and push the container
+
 gcloud builds submit \
   --tag gcr.io/iso-optimization/drive-notifier \
   --project=iso-optimization
@@ -74,6 +78,7 @@ gcloud builds submit \
 ---
 
 ## Step 6 — Deploy as a Cloud Run Job
+
 gcloud run jobs create drive-notifier \
   --image gcr.io/iso-optimization/drive-notifier \
   --region europe-west1 \
@@ -88,6 +93,7 @@ gcloud run jobs create drive-notifier \
 ---
 
 ## Step 7 — Schedule with Cloud Scheduler
+
 Run once a month on the first Monday of the month at 09:00 UTC:
 
 gcloud scheduler jobs create http drive-notifier-schedule \
@@ -101,19 +107,26 @@ gcloud scheduler jobs create http drive-notifier-schedule \
 ---
 
 ## Adding more recipients
+
 Edit config.yaml:
 
 recipients:
   - "echykolaeva@waverleysoftware.com"
   - "another.person@example.com"
+
 Then rebuild and redeploy the container (Steps 5–6).
 
 ---
 
 ## Local testing
+
 pip install -r requirements.txt
 cp /path/to/service_account.json .
 export ANTHROPIC_API_KEY=sk-ant-...
 export GMAIL_USER=you@gmail.com
 export GMAIL_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
 python notify.py
+
+
+
+
